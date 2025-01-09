@@ -1,0 +1,12 @@
+FROM searxng-base
+
+RUN apk update
+RUN apk add --no-cache make bash
+RUN apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community geckodriver
+
+
+WORKDIR /usr/local/
+
+#COPY . .
+
+ENTRYPOINT ["make"]

@@ -1,0 +1,15 @@
+FROM ubuntu:latest
+
+WORKDIR /usr/local/
+ADD . .
+
+RUN apt-get update
+RUN apt-get install -y systemd python3 git wget curl sudo
+
+RUN git init 
+
+RUN ./utils/searxng.sh install all
+
+RUN alias python=python3
+
+CMD ["make", "test"]

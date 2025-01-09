@@ -71,6 +71,26 @@ test.shell:
 		utils/morty.sh
 	$(Q)$(MTOOLS) build_msg TEST "$@ OK"
 
+PHONY += distrobox-install
+distrobox-install:
+	vm="distrobox enter searxng --root --"
+	$(vm) distrobox create -Y --root -i debian --name searxng --additional-packages "python3-dev python3-babel python3-venv uwsgi uwsgi-plugin-python3 git build-essential libxslt-dev zlib1g-dev libffi-dev libssl-dev"
+	$(vm) id -u searxng &>/dev/null || sudo -H useradd --shell /bin/sh --system --home-dir "/usr/local/searxng" searxng
+	$(vm) sudo -H mkdir -p "/usr/local/searxng"
+	$(vm) sudo -H chown -R "searxng:searxng" "/usr/local/searxng"
+	$(vm) sudo -H ./utils/searxng.sh install all
+
+PHONY += docker-build
+docker-build:
+	echo $(Q)./manage docker.build
+	echo docker build . -t searxng-base
+	docker build . -t searxng-test -f Dockerfile.test 
+
+PHONY += docker-run
+docker-test:
+	echo $(Q)./manage docker.build
+	docker run -it --entrypoint /bin/sh searxng-test
+
 
 # wrap ./manage script
 
