@@ -20,8 +20,6 @@ Credentials are available here: https://github.com/NixOS/nixos-search/blob/main/
      shortcut: nix
      engine: nixpkgs
      base_url: https://search.nixos.org/backend
-     username:
-     password:
      index: latest-42-nixos-unstable
      channel: unstable
 
@@ -30,6 +28,7 @@ Implementation
 
 """
 
+from urllib.request import urlopen
 from searx.exceptions import SearxEngineAPIException
 
 about = {
@@ -42,26 +41,22 @@ categories = ["it", "packages"]
 
 base_url = "https://search.nixos.org/backend"
 """URL of the `Nixpkgs Search`_ search instance"""
-username = ""
-password = ""
-index = "latest-42-nixos-unstable"
 channel = "unstable"
 """Which `Nix Channel`_ to use."""
-search_url = f"{base_url}/{index}/_search"
 show_metadata = False
 categories = ["it", "packages"]
 
+with urlopen("https://raw.githubusercontent.com/NixOS/nixos-search/master/VERSION") as version_file:
+    version = version_file.read().decode("utf-8").strip()
 
-def init():
-    if not (username and password):
-        raise ValueError("username and password need to be configured.")
+search_url = f"{base_url}/latest-{version}-nixos-{channel}/_search"
 
 
 def request(query, params):
-    params["auth"] = (username, password)
     params["url"] = search_url
     params["data"] = _build_query(query)
     params["headers"]["Content-Type"] = "application/json"
+    params["headers"]["Authorization"] = "YVdWU0FMWHBadjpYOGdQSG56TDUyd0ZFZWt1eHNmUTljU2g"
 
     return params
 
