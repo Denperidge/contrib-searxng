@@ -3,6 +3,9 @@
 nixpkgs package index.  The search backend on search.nixos.org is an
 Elasticsearch instance.
 
+.. _Nixpkgs Search: https://search.nixos.org/packages
+.. _Nix Channel: https://nix.dev/manual/nix/2.25/command-ref/nix-channel.html
+
 Example
 =======
 
@@ -22,6 +25,9 @@ Credentials are available here: https://github.com/NixOS/nixos-search/blob/main/
      index: latest-42-nixos-unstable
      channel: unstable
 
+Implementation
+==============
+
 """
 
 from searx.exceptions import SearxEngineAPIException
@@ -35,10 +41,12 @@ about = {
 categories = ["it", "packages"]
 
 base_url = "https://search.nixos.org/backend"
+"""URL of the `Nixpkgs Search`_ search instance"""
 username = ""
 password = ""
 index = "latest-42-nixos-unstable"
 channel = "unstable"
+"""Which `Nix Channel`_ to use."""
 search_url = f"{base_url}/{index}/_search"
 show_metadata = False
 categories = ["it", "packages"]
