@@ -5,9 +5,12 @@
 <div class="tabs" role="tablist">
 {%- endmacro -%}
 
-{%- macro tab_header(name, id, label, checked) -%}
+{%- macro tab_label(name, id, label, checked) -%}
 <input type="radio" name="{{ name }}" id="tab-{{ id }}" {% if checked is sameas true %}checked="checked"{% endif %}>
-<label id="tab-label-{{ id }}" for="tab-{{ id }}" role="tab" aria-controls="tab-content-{{ id }}">{{ label }}</label>
+<label tabindex="0" id="tab-label-{{ id }}" for="tab-{{ id }}" role="tab" aria-controls="tab-content-{{ id }}">{{ label }}</label>
+{%- endmacro -%}
+
+{%- macro tab_header(id) -%}
 <section id="tab-content-{{ id }}" role="tabpanel" aria-hidden="false">
 {%- endmacro -%}
 
@@ -157,10 +160,17 @@
 
   <form id="search_form" method="post" action="{{ url_for('preferences') }}" autocomplete="off">
     {{- tabs_open() -}}
+      {{- tab_label('maintab', 'general', _('General'), True) -}}
+      {{- tab_label('maintab', 'ui', _('User interface')) -}}
+      {{- tab_label('maintab', 'privacy', _('Privacy')) -}}
+      {{- tab_label('maintab', 'engines', _('Engines')) -}}
+      {{- tab_label('maintab', 'query', _('Special Queries')) -}}
+      {{- tab_label('maintab', 'cookies', _('Cookies')) -}}
+    {{- tabs_close() -}}
 
     {# tab: general #}
 
-    {{- tab_header('maintab', 'general', _('General'), True) -}}
+    {{- tab_header('general') -}}
     {%- if 'categories' not in locked_preferences -%}
       <fieldset>
         <legend>{{- _('Default categories') -}}</legend>
@@ -191,7 +201,7 @@
 
     {# tab: ui #}
 
-    {{- tab_header('maintab', 'ui', _('User interface')) -}}
+    {{- tab_header('ui') -}}
     {%- if 'locale' not in locked_preferences -%}
       {%- include 'simple/preferences/ui_locale.html' -%}
     {%- endif -%}
@@ -214,7 +224,7 @@
 
     {# tab: privacy #}
 
-    {{- tab_header('maintab', 'privacy', _('Privacy')) -}}
+    {{- tab_header('privacy') -}}
     {%- if 'method' not in locked_preferences -%}
       {%- include 'simple/preferences/method.html' -%}
     {%- endif -%}
@@ -229,7 +239,7 @@
 
     {# tab: enignes #}
 
-    {{- tab_header('maintab', 'engines', _('Engines')) -}}
+    {{- tab_header('engines') -}}
     <p>
       {{- _('Currently used search engines') -}}
     </p>
@@ -240,7 +250,7 @@
 
     {# tab: query #}
 
-    {{- tab_header('maintab', 'query', _('Special Queries')) -}}
+    {{- tab_header('query') -}}
     {%- if answer_storage -%}
       {%- include 'simple/preferences/answerers.html' -%}
     {%- endif -%}
@@ -248,10 +258,9 @@
 
     {# tab: cookies #}
 
-    {{- tab_header('maintab', 'cookies', _('Cookies')) -}}
+    {{- tab_header('cookies') -}}
     {%- include 'simple/preferences/cookies.html' -%}
     {{- tab_footer() -}}
-    {{- tabs_close() -}}
 
     {# footer with save & reset buttons #}
 
